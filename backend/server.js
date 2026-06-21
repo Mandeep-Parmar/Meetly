@@ -2,9 +2,13 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import connectDB from "./config/mongodb.js";
+import { Server } from "socket.io";
+import { createServer } from "node:http";
 
 const app = express();
 connectDB();
+const server = createServer(app);
+const io = new Server(server);
 
 // middlewares
 app.use(express.json());
@@ -18,6 +22,6 @@ app.get("/", (req, res) => {
   res.send("API Working");
 });
 
-app.listen(port, () => {
-  console.log(`App is listing on port ${port}`);
+server.listen(port, () => {
+  console.log(`Server is listing on port ${port}`);
 });
