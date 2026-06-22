@@ -2,6 +2,7 @@ import React from "react";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import Features from "../components/Features";
+import HowItWorks from "../components/HowItWorkes";
 
 const LandingPage = () => {
   return (
@@ -20,6 +21,7 @@ const LandingPage = () => {
         </div>
 
         <Features />
+        <HowItWorks />
       </div>
     </div>
   );
