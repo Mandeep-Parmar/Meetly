@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import Features from "../components/Features";
 import HowItWorks from "../components/HowItWorkes";
+import CTA from "../components/CTA";
 
 const LandingPage = () => {
   return (
@@ -22,6 +23,7 @@ const LandingPage = () => {
 
         <Features />
         <HowItWorks />
+        <CTA />
       </div>
     </div>
   );
