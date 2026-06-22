@@ -1,6 +1,7 @@
 import React from "react";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
+import Features from "../components/Features";
 
 const LandingPage = () => {
   return (
@@ -13,9 +14,12 @@ const LandingPage = () => {
 
       <div className="relative z-10">
         <Navbar />
-        <div className="pt-32 px-10">
+
+        <div className="pt-32 px-5">
           <Hero />
         </div>
+
+        <Features />
       </div>
     </div>
   );
