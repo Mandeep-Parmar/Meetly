@@ -1,9 +1,24 @@
-import React from 'react'
+import React from "react";
+import Navbar from "../components/Navbar";
+import Hero from "../components/Hero";
 
 const LandingPage = () => {
   return (
-    <div>LandingPage</div>
-  )
-}
+    <div className="relative min-h-screen w-full bg-zinc-950 text-white overflow-hidden">
+      {/* Soft Top Glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-indigo-500 opacity-20 blur-[180px] rounded-full z-0"></div>
 
-export default LandingPage
+      {/* Soft Right Glow */}
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-purple-500 opacity-20 blur-[150px] rounded-full z-0"></div>
+
+      <div className="relative z-10">
+        <Navbar />
+        <div className="pt-32 px-10">
+          <Hero />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default LandingPage;
