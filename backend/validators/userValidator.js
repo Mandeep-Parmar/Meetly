@@ -21,3 +21,8 @@ export const registerSchema = Joi.object({
     "string.min": "Password must be at least 8 characters",
   }),
 });
+
+export const loginSchema = Joi.object({
+  email: Joi.string().email().required(),
+  password: Joi.string().required(),
+});
