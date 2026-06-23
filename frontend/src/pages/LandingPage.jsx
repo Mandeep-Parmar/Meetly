@@ -4,6 +4,7 @@ import Hero from "../components/Hero";
 import Features from "../components/Features";
 import HowItWorks from "../components/HowItWorkes";
 import CTA from "../components/CTA";
+import Footer from "../components/Footer";
 
 const LandingPage = () => {
   return (
@@ -24,6 +25,8 @@ const LandingPage = () => {
         <Features />
         <HowItWorks />
         <CTA />
+
+        <Footer />
       </div>
     </div>
   );
