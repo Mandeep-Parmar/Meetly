@@ -16,8 +16,6 @@ const LandingPage = () => {
       <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-purple-500 opacity-20 blur-[150px] rounded-full z-0"></div>
 
       <div className="relative z-10">
-        <Navbar />
-
         <div className="pt-32 px-5">
           <Hero />
         </div>
@@ -25,8 +23,6 @@ const LandingPage = () => {
         <Features />
         <HowItWorks />
         <CTA />
-
-        <Footer />
       </div>
     </div>
   );

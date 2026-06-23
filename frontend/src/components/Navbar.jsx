@@ -1,15 +1,22 @@
 import React, { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <nav className="fixed py-3 top-0 w-full z-50 border-b bg-zinc-950/80 backdrop-blur-md border-white/10">
       <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center gap-2">
-          <img src="meetly-logo.png" alt="logo" className="w-36" />
+          <img
+            src="meetly-logo.png"
+            alt="logo"
+            className="w-36"
+            onClick={() => navigate("/")}
+          />
         </div>
 
         {/* Desktop Buttons */}
@@ -22,7 +29,10 @@ const Navbar = () => {
             Register
           </button>
 
-          <button className="px-5 py-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-sm font-medium hover:opacity-90 transition shadow-lg shadow-purple-500/20">
+          <button
+            onClick={() => navigate("/auth")}
+            className="px-5 py-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-sm font-medium hover:opacity-90 transition shadow-lg shadow-purple-500/20"
+          >
             Login
           </button>
         </div>
