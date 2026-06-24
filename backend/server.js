@@ -18,7 +18,7 @@ app.use(cors());
 const port = process.env.PORT || 4000;
 
 // api routes
-app.use("/api/users", userRouter);
+app.use("/api/user", userRouter);
 
 app.get("/", (req, res) => {
   res.send("API Working");
