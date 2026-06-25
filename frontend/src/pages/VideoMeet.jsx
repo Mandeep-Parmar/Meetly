@@ -107,10 +107,60 @@ const VideoMeet = () => {
     }
   };
 
+  //---------------------- CONTROL CAMERA / MIC ON-OFF ---------------
+  let updateMedia = async () => {
+    try {
+      // If video or audio enabled
+      if ((video && videoAvailable) || (audio && audioAvailable)) {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: video,
+          audio: audio,
+        });
+
+        // Save stream globally
+        window.localStream = stream;
+
+        // Show video on screen
+        if (localVideoRef.current) {
+          localVideoRef.current.srcObject = stream;
+        }
+      } else {
+        // else both off → stop everything
+        const tracks = localVideoRef.current.srcObject.getTracks();
+        tracks.forEach((track) => track.stop());
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getMedia = () => {
+    setVideo(videoAvailable);
+    setAudio(audioAvailable);
+
+    // connectToSocketServer();
+  };
+
   // run on page load
   useEffect(() => {
     getPermissions();
   }, []);
+
+  // Whenever video OR audio changes
+  // → run updateMedia()
+  useEffect(() => {
+    if (video !== undefined && audio !== undefined) {
+      updateMedia();
+    }
+  }, [audio, video]);
+
+  // After clicking connect:
+  // → if permission = true → turn ON
+  // → if permission = false → stay OFF
+  const connect = () => {
+    setAskForUsername(false);
+    getMedia();
+  };
 
   return (
     <div className="p-6 text-white">
@@ -118,14 +168,30 @@ const VideoMeet = () => {
       {askForUsername ? (
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">Enter Lobby</h2>
-          <input
-            type="text"
-            placeholder="Enter username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="px-4 py-2 rounded bg-white/10 border border-white/20"
-          />
-          <button className="px-4 py-2 bg-purple-600 rounded">Connect</button>
+
+          <div className="space-y-1">
+            <label
+              htmlFor="username"
+              className="block text-xs font-medium text-gray-400 ml-1"
+            >
+              Username
+            </label>
+            <input
+              type="text"
+              id="username"
+              placeholder="Enter username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="px-4 py-2 rounded bg-white/10 border border-white/20"
+            />
+
+            <button
+              onClick={() => connect()}
+              className="px-4 py-2 bg-purple-600 rounded"
+            >
+              Connect
+            </button>
+          </div>
 
           {/* ================= VIDEO SCREEN ================= */}
           <div className="space-y-4">
