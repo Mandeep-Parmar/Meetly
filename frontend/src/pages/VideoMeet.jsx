@@ -87,34 +87,31 @@ const VideoMeet = () => {
         video: true,
       });
 
-      if (videoPermission) {
-        setVideoAvailable(true);
-      } else {
-        setVideoAvailable(false);
-      }
+      // Store permission result in a local variable.
+      // We use this immediately because React state
+      // updates asynchronously.
+      // !! (double exclamation mark) is a JavaScript operator used to forcefully convert any value into a strict boolean (true or false).
+      const hasVideo = !!videoPermission;
+      setVideoAvailable(hasVideo);
 
       // Ask for audio
       const audioPermission = await navigator.mediaDevices.getUserMedia({
         audio: true,
       });
 
-      if (audioPermission) {
-        setAudioAvailable(true);
-      } else {
-        setAudioAvailable(false);
-      }
+      // Store permission result in a local variable.
+      const hasAudio = !!audioPermission;
+      setAudioAvailable(hasAudio);
 
       // Check screen share support
-      if (navigator.mediaDevices.getDisplayMedia) {
-        setScreenAvailable(true);
-      } else {
-        setScreenAvailable(false);
-      }
+      setScreenAvailable(!!navigator.mediaDevices.getDisplayMedia);
 
-      if (videoAvailable || audioAvailable) {
+      // Use local variables instead of React state.
+      // React state hasn't updated yet inside this function.
+      if (hasVideo || hasAudio) {
         const userMediaStream = await navigator.mediaDevices.getUserMedia({
-          video: videoAvailable,
-          audio: audioAvailable,
+          video: hasVideo,
+          audio: hasAudio,
         });
 
         if (userMediaStream) {
