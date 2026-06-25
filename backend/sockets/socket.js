@@ -1,4 +1,4 @@
-import { Server, Socket } from "socket.io";
+import { Server } from "socket.io";
 
 // on     → listen (wait for something to happen)
 // emit   → send data / trigger event
@@ -38,7 +38,9 @@ export const connectToSocket = (server) => {
       }
 
       // add user to room
-      connections[roomId].push(socket.id);
+      if (!connections[roomId].includes(socket.id)) {
+        connections[roomId].push(socket.id);
+      }
 
       // store join time
       timeOnline[socket.id] = new Date();
@@ -47,7 +49,7 @@ export const connectToSocket = (server) => {
 
       // notify all users in room
       connections[roomId].forEach((id) => {
-        io.to(id).emmit("user-joined", socket.id, connections[roomId]);
+        io.to(id).emit("user-joined", socket.id, connections[roomId]);
       });
 
       // send old messages to new user

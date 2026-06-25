@@ -1,11 +1,22 @@
 import React, { useEffect, useRef, useState } from "react";
+import { io } from "socket.io-client";
 
 const VideoMeet = () => {
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+  // Stores one RTCPeerConnection per user
+  const connections = useRef({});
+
   // ================= REFERENCE =================
 
   // Used to access <video> DOM element directly
   // So we can attach camera stream to it
   let localVideoRef = useRef();
+
+  // This stores the socket connection
+  const socketRef = useRef();
+  // This stores the socket id
+  const socketIdRef = useRef();
 
   // ================= PERMISSIONS =================
 
@@ -126,19 +137,261 @@ const VideoMeet = () => {
         }
       } else {
         // else both off → stop everything
-        const tracks = localVideoRef.current.srcObject.getTracks();
-        tracks.forEach((track) => track.stop());
+        const tracks = localVideoRef.current?.srcObject?.getTracks();
+        tracks?.forEach((track) => track.stop());
       }
     } catch (error) {
       console.log(error);
     }
   };
 
+  // ======================================================
+  // Handle every signaling message.
+  //
+  // The message may contain:
+  //
+  // 1. Offer
+  // 2. Answer
+  // 3. ICE Candidate
+  //
+  // We'll identify which one it is
+  // and process it accordingly.
+  // ======================================================
+  const handleSignal = async (fromId, message) => {
+    // Convert JSON string into JavaScript object
+    const signal = JSON.parse(message);
+
+    // Handle Offer
+
+    // Handle Answer
+
+    // Handle ICE
+  };
+
+  // ======================================================
+  // Create a WebRTC Offer.
+  //
+  // Think of an Offer as:
+  //
+  // "Hello!
+  // I want to start a video call with you."
+  // ======================================================
+  const createOffer = async (userId) => {
+    // Get this participant's PeerConnection.
+    const peer = connections.current[userId];
+
+    // --------------------------------------------
+    // Create Offer
+    // --------------------------------------------
+    // Browser generates the information needed
+    // to start the WebRTC connection.
+    // --------------------------------------------
+    const offer = await peer.createOffer();
+
+    // Save this offer inside the browser. Later the browser uses it to establish the connection.
+    await peer.setLocalDescription(offer);
+
+    // Send the Offer to the other participant
+    // through Socket.IO.
+    //
+    // Socket.IO only transfers the Offer.
+    // Video is NOT sent through Socket.IO.
+    socketRef.current.emit(
+      "signal",
+      clientId,
+      JSON.stringify({
+        sdp: peer.localDescription,
+      }),
+    );
+  };
+
+  // ======================================================
+  // User left
+  // Remove their video from the UI.
+  // ======================================================
+  const handleUserLeft = (userId) => {
+    console.log(userId, "Left the meeting");
+
+    setVideos((prev) => prev.filter((video) => video.socketId !== userId));
+  };
+
+  // ======================================================
+  // ADD REMOTE VIDEO
+  // Adds or updates a participant's video
+  // inside the videos state
+  // ======================================================
+  const addRemoteVideo = (userId, stream) => {
+    setVideos((prev) => {
+      // Adds or updates a participant's video inside the videos state
+      const alreadyExists = prev.find((video) => video.socketId === userId);
+
+      // -------------------------------------------
+      // User already exists
+      // -------------------------------------------
+      // Just replace the stream.
+      // This avoids creating duplicate videos.
+      // -------------------------------------------
+      if (alreadyExists) {
+        return prev.map((video) =>
+          video.socketId === userId ? { ...video, stream } : video,
+        );
+      }
+
+      // -------------------------------------------
+      // First time seeing this participant
+      // -------------------------------------------
+      // Add them into the videos array.
+      // -------------------------------------------
+      return [
+        ...prev,
+        {
+          socketId: userId,
+          stream,
+        },
+      ];
+    });
+  };
+
+  // ======================================================
+  // CREATE PEER CONNECTION
+  // Creates a direct WebRTC connection with one participant.
+  // Think of it like creating a private communication pipe.
+  // ======================================================
+  const createPeerConnection = (userId) => {
+    // Create a new WebRTC PeerConnection object.
+    // Every participant has their own PeerConnection
+    connections.current[userId] = new RTCPeerConnection(peerConfigConnections);
+
+    // Short variable for easier reading.
+    const peer = connections.current[clientId];
+
+    // ------------------------------------------------------
+    // ICE Candidate
+    // ------------------------------------------------------
+    // Whenever the browser discovers a new network path
+    // (called an ICE Candidate),
+    // send it to the other participant through Socket.IO.
+    //
+    // NOTE:
+    // Socket.IO is NOT sending video.
+    // It only sends connection information.
+    // ------------------------------------------------------
+    peer.onicecandidate = (event) => {
+      // Browser finished finding candidates.
+      if (!event.candidate) return;
+
+      socketRef.current.emit(
+        "signal",
+        cliendId,
+        JSON.stringify({
+          ice: event.candidate,
+        }),
+      );
+    };
+
+    // ------------------------------------------------------
+    // Remote Stream Received
+    // ------------------------------------------------------
+    // This runs when the other user's
+    // camera & microphone arrive.
+    //
+    // We simply display their video.
+    // ------------------------------------------------------
+    peer.ontrack = (event) => {
+      console.log("Remote stream received");
+
+      addRemoteVideo(userId, event.stream[0]);
+    };
+
+    // ------------------------------------------------------
+    // Send My Camera + Microphone
+    // ------------------------------------------------------
+    // localStream contains:
+    // Camera Track
+    // +
+    // Microphone Track
+    //
+    // We attach both tracks to this PeerConnection
+    // so the other participant can receive them.
+    // ------------------------------------------------------
+    if (window.localStream) {
+      window.localStream.getTracks().forEach((track) => {
+        peeer.addTrack(track, window.localStream);
+      });
+    }
+  };
+
+  // ======================================================
+  // NEW USER JOINED
+  // ======================================================
+  const handleUserJoined = (newUserId, users) => {
+    console.log("New User: ", newUserId);
+
+    users.forEach((userId) => {
+      // Don't create a connection with yourself.
+      if (userId === socketIdRef.current) return;
+
+      // Create a WebRTC connection (a communication pipe)
+      // between me and this participant.
+      createPeerConnection(userId);
+    });
+  };
+
+  // ======================================================
+  // REGISTER SOCKET EVENTS
+  // ======================================================
+  const registerSocketEvents = () => {
+    // someone joined
+    socketRef.current.on("user-joined", handleUserJoined);
+
+    // someone left
+    socketRef.current.on("user-left", handleUserLeft);
+
+    // Receive offer / answer / ice
+    socketRef.current.on("signal", handleSignal);
+  };
+
+  // ======================================================
+  // Join Meeting
+  // ======================================================
+  const joinMeeting = () => {
+    const roomId = "meeting-123";
+
+    socketRef.current.emit("join-call", roomId);
+
+    console.log("Joined Room:", roomId);
+  };
+
+  // ================= CONNECT TO SOCKET SERVER =================
+  const connectToSocketServer = () => {
+    // Already connected
+    if (socketRef.current) return;
+
+    // Connect frontend to socket server.
+    socketRef.current = io(backendUrl);
+
+    // ---------------- CONNECTED ----------------
+    socketRef.current.on("connect", () => {
+      console.log("Connected to socket server");
+
+      // Save socket id
+      socketIdRef.current = socketRef.current.id;
+
+      console.log("My Socket ID:", socketIdRef.current);
+
+      // Join meeting room
+      joinMeeting();
+
+      // Start listening to events
+      registerSocketEvents();
+    });
+  };
+
   const getMedia = () => {
     setVideo(videoAvailable);
     setAudio(audioAvailable);
 
-    // connectToSocketServer();
+    connectToSocketServer();
   };
 
   // run on page load
