@@ -2,6 +2,23 @@ import React, { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 
 const VideoMeet = () => {
+  // ======================================================
+  // WebRTC Configuration
+  //
+  // STUN server helps browsers discover their
+  // public network address.
+  //
+  // Google provides a free public STUN server,
+  // which is enough for development.
+  // ======================================================
+  const peerConfigConnections = {
+    iceServers: [
+      {
+        urls: "stun:stun.l.google.com:19302",
+      },
+    ],
+  };
+
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   // Stores one RTCPeerConnection per user
@@ -146,26 +163,101 @@ const VideoMeet = () => {
   };
 
   // ======================================================
-  // Handle every signaling message.
+  // Handle every signaling message received from Socket.IO.
   //
-  // The message may contain:
+  // The message(signal) may contain:
   //
-  // 1. Offer
-  // 2. Answer
-  // 3. ICE Candidate
+  // 1. SDP Offer   -> "I want to start a call."
+  // 2. SDP Answer  -> "I accept your call."
+  // 3. ICE Candidate -> "Here is one network path to reach me."
   //
-  // We'll identify which one it is
-  // and process it accordingly.
+  // This function checks which type of signal arrived
+  // and performs the appropriate action.
   // ======================================================
   const handleSignal = async (fromId, message) => {
     // Convert JSON string into JavaScript object
     const signal = JSON.parse(message);
 
-    // Handle Offer
+    console.log(signal);
 
-    // Handle Answer
+    //------------- OFFER / ANSWER ---------------
 
-    // Handle ICE
+    // If signal contains "sdp",
+    // then it is either an Offer or an Answer.
+    if (signal.sdp) {
+      // If this is the first message from this user, create a PeerConnection first.
+      if (!connections.current[fromId]) {
+        createPeerConnection(fromId);
+      }
+      // Get this participant's PeerConnection.
+      const peer = connections.current[fromId];
+
+      // Save remote description
+      await peer.setRemoteDescription(new RTCSessionDescription(signal.sdp));
+
+      // -------------------------------------------------
+      // OFFER RECEIVED
+      // -------------------------------------------------
+      // Someone is asking to start a WebRTC connection.
+      //
+      // We must:
+      //
+      // 1. Create an Answer
+      // 2. Save it locally
+      // 3. Send it back
+      // -------------------------------------------------
+      if (signal.sdp.type === "offer") {
+        console.log("Offer received");
+
+        // Browser creates an Answer.
+        const answer = await peer.createAnswer();
+
+        // Save Answer inside this browser.
+        await peer.setLocalDescription(answer);
+
+        // Send Answer back to caller.
+        socketRef.current.emit(
+          "signal",
+          fromId,
+          JSON.stringify({
+            sdp: peer.localDescription,
+          }),
+        );
+      }
+      // -------------------------------------------------
+      // ANSWER RECEIVED
+      // -------------------------------------------------
+      // This means the other participant
+      // accepted our Offer.
+      //
+      // Nothing else to create here because
+      // setRemoteDescription() already saved it.
+      // -------------------------------------------------
+      else {
+        console.log("Answer received");
+      }
+    }
+
+    // ===================================================
+    // ICE CANDIDATE
+    // ===================================================
+    // ICE Candidate contains one possible network path.
+    //
+    // Browser discovered a way to reach the other user.
+    //
+    // Add this path into the PeerConnection.
+    //
+    // Browser will automatically test it.
+    // ===================================================
+    else if (signal.ice) {
+      console.log("ICE Candidate received");
+
+      // Add this candidate to PeerConnection.
+      // Browser will now try this network path.
+      await connections.current[fromId].addIceCandidate(
+        new RTCIceCandidate(signal.ice),
+      );
+    }
   };
 
   // ======================================================
@@ -198,7 +290,7 @@ const VideoMeet = () => {
     // Video is NOT sent through Socket.IO.
     socketRef.current.emit(
       "signal",
-      clientId,
+      userId,
       JSON.stringify({
         sdp: peer.localDescription,
       }),
@@ -263,7 +355,7 @@ const VideoMeet = () => {
     connections.current[userId] = new RTCPeerConnection(peerConfigConnections);
 
     // Short variable for easier reading.
-    const peer = connections.current[clientId];
+    const peer = connections.current[userId];
 
     // ------------------------------------------------------
     // ICE Candidate
@@ -282,7 +374,7 @@ const VideoMeet = () => {
 
       socketRef.current.emit(
         "signal",
-        cliendId,
+        userId,
         JSON.stringify({
           ice: event.candidate,
         }),
@@ -300,7 +392,7 @@ const VideoMeet = () => {
     peer.ontrack = (event) => {
       console.log("Remote stream received");
 
-      addRemoteVideo(userId, event.stream[0]);
+      addRemoteVideo(userId, event.streams[0]);
     };
 
     // ------------------------------------------------------
@@ -316,7 +408,7 @@ const VideoMeet = () => {
     // ------------------------------------------------------
     if (window.localStream) {
       window.localStream.getTracks().forEach((track) => {
-        peeer.addTrack(track, window.localStream);
+        peer.addTrack(track, window.localStream);
       });
     }
   };
@@ -334,6 +426,32 @@ const VideoMeet = () => {
       // Create a WebRTC connection (a communication pipe)
       // between me and this participant.
       createPeerConnection(userId);
+
+      // -------------------------------------------------------
+      // Start WebRTC negotiation.
+      //
+      // After creating a PeerConnection,
+      // someone must initiate the connection.
+      //
+      // This browser becomes the "caller" by creating an Offer.
+      //
+      // Flow:
+      //
+      // Me
+      //   │
+      // createOffer()
+      //   │
+      // Socket.IO
+      //   │
+      // Other User
+      //
+      // The other user will receive this Offer,
+      // create an Answer,
+      // and send it back.
+      // -------------------------------------------------------
+      if (newUserId === userId) {
+        createOffer(userId);
+      }
     });
   };
 
@@ -478,7 +596,18 @@ const VideoMeet = () => {
           </div>
         </div>
       ) : (
-        <></>
+        <>
+          <video
+            ref={localVideoRef}
+            autoPlay
+            muted
+            className="w-[400px] bg-black rounded"
+          />
+
+          {videos.map((video) => (
+            <div></div>
+          ))}
+        </>
       )}
     </div>
   );
