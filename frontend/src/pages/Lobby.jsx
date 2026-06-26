@@ -59,6 +59,7 @@ const Lobby = ({
         {/* CARD */}
         <div className="mt-8 rounded-3xl border border-white/10 bg-[#12121A] px-5 shadow-xl shadow-purple-900/10">
           {/* Camera Preview */}
+          {/*  aspect-video -> Maintains a 16:9 video ratio automatically. */}
           <div className="mt-8 aspect-video max-h-[420px] rounded-2xl border border-white/10 bg-[#12121A] overflow-hidden relative">
             <video
               ref={localVideoRef}

@@ -584,28 +584,7 @@ const VideoMeet = () => {
         />
       ) : (
         <>
-          <MeetingRoom />
-          {/* <video
-            ref={localVideoRef}
-            autoPlay
-            muted
-            playsInline
-            className="w-[400px] bg-black rounded"
-          />
-
-          {videos.map((video) => (
-            <video
-              key={video.socketId}
-              autoPlay
-              playsInline
-              ref={(ref) => {
-                if (ref && video.stream) {
-                  ref.srcObject = video.stream;
-                }
-              }}
-              className="w-80 rounded-lg"
-            />
-          ))} */}
+          <MeetingRoom localVideoRef={localVideoRef} videos={videos} />
         </>
       )}
     </div>
