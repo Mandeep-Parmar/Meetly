@@ -527,6 +527,12 @@ const VideoMeet = () => {
     }
   }, [audio, video]);
 
+  useEffect(() => {
+    if (!askForUsername && localVideoRef.current && window.localStream) {
+      localVideoRef.current.srcObject = window.localStream;
+    }
+  }, [askForUsername]);
+
   // After clicking connect:
   // → if permission = true → turn ON
   // → if permission = false → stay OFF
