@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import { toast } from "react-toastify";
+import Lobby from "./Lobby";
 
 const VideoMeet = () => {
   // ======================================================
@@ -527,6 +528,10 @@ const VideoMeet = () => {
     }
   }, [audio, video]);
 
+  // ======================================================
+  // Reattach the existing local media stream after
+  // switching from the lobby to the meeting screen.
+  // ======================================================
   useEffect(() => {
     if (!askForUsername && localVideoRef.current && window.localStream) {
       localVideoRef.current.srcObject = window.localStream;
@@ -550,68 +555,32 @@ const VideoMeet = () => {
     getMedia();
   };
 
+  let handleVideo = () => {
+    setVideo(!video);
+  };
+
+  let handleAudio = () => {
+    setAudio(!audio);
+  };
+
   return (
     <div className="p-6 text-white">
       {/* ================= USERNAME SCREEN ================= */}
       {askForUsername ? (
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold">Enter Lobby</h2>
-
-          <div className="space-y-1">
-            <label
-              htmlFor="username"
-              className="block text-xs font-medium text-gray-400 ml-1"
-            >
-              Username
-            </label>
-            <input
-              type="text"
-              id="username"
-              placeholder="Enter username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="px-4 py-2 rounded bg-white/10 border border-white/20"
-            />
-
-            <button
-              onClick={() => connect()}
-              className="px-4 py-2 bg-purple-600 rounded"
-            >
-              Connect
-            </button>
-          </div>
-
-          {/* ================= VIDEO SCREEN ================= */}
-          <div className="space-y-4">
-            <video
-              ref={localVideoRef}
-              autoPlay
-              muted
-              className="w-[400px] bg-black rounded"
-            />
-
-            {/* CONTROLS */}
-            <div className="flex gap-4">
-              <button
-                onClick={() => {
-                  setVideo(!video);
-                }}
-                className="px-3 py-2 bg-blue-600 rounded"
-              >
-                {video ? "Turn Video Off" : "Turn Video On"}
-              </button>
-
-              <button
-                onClick={() => {
-                  setAudio(!audio);
-                }}
-                className="px-3 py-2 bg-green-600 rounded"
-              >
-                {audio ? "Mute Mic" : "Unmute Mic"}
-              </button>
-            </div>
-          </div>
-        </div>
+        <Lobby
+          localVideoRef={localVideoRef}
+          username={username}
+          setUsername={setUsername}
+          connect={connect}
+          videoAvailable={videoAvailable}
+          audioAvailable={audioAvailable}
+          video={video}
+          setVideo={setVideo}
+          audio={audio}
+          setAudio={setAudio}
+          handleVideo={handleVideo}
+          handleAudio={handleAudio}
+        />
       ) : (
         <>
           <video
