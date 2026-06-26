@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
+import { toast } from "react-toastify";
 
 const VideoMeet = () => {
   // ======================================================
@@ -133,7 +134,7 @@ const VideoMeet = () => {
   };
 
   //---------------------- CONTROL CAMERA / MIC ON-OFF ---------------
-  let updateMedia = async () => {
+  const updateMedia = async () => {
     try {
       // If video or audio enabled
       if ((video && videoAvailable) || (audio && audioAvailable)) {
@@ -268,6 +269,8 @@ const VideoMeet = () => {
   const createOffer = async (userId) => {
     // Get this participant's PeerConnection.
     const peer = connections.current[userId];
+
+    if (!peer) return;
 
     // --------------------------------------------
     // Create Offer
@@ -422,7 +425,9 @@ const VideoMeet = () => {
 
       // Create a WebRTC connection (a communication pipe)
       // between me and this participant.
-      createPeerConnection(userId);
+      if (!connections.current[userId]) {
+        createPeerConnection(userId);
+      }
 
       // -------------------------------------------------------
       // Start WebRTC negotiation.
@@ -526,6 +531,15 @@ const VideoMeet = () => {
   // → if permission = true → turn ON
   // → if permission = false → stay OFF
   const connect = () => {
+    // Remove extra spaces
+    const trimmedUsername = username.trim();
+
+    //check if username is empty
+    if (!trimmedUsername) {
+      toast.error("Please enter your username.");
+      return;
+    }
+
     setAskForUsername(false);
     getMedia();
   };
@@ -598,11 +612,22 @@ const VideoMeet = () => {
             ref={localVideoRef}
             autoPlay
             muted
+            playsInline
             className="w-[400px] bg-black rounded"
           />
 
           {videos.map((video) => (
-            <div></div>
+            <video
+              key={video.socketId}
+              autoPlay
+              playsInline
+              ref={(ref) => {
+                if (ref && video.stream) {
+                  ref.srcObject = video.stream;
+                }
+              }}
+              className="w-80 rounded-lg"
+            />
           ))}
         </>
       )}
