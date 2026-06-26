@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import { toast } from "react-toastify";
 import Lobby from "./Lobby";
+import MeetingRoom from "./MeetingRoom";
 
 const VideoMeet = () => {
   // ======================================================
@@ -583,7 +584,8 @@ const VideoMeet = () => {
         />
       ) : (
         <>
-          <video
+          <MeetingRoom />
+          {/* <video
             ref={localVideoRef}
             autoPlay
             muted
@@ -603,7 +605,7 @@ const VideoMeet = () => {
               }}
               className="w-80 rounded-lg"
             />
-          ))}
+          ))} */}
         </>
       )}
     </div>
