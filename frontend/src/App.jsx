@@ -18,7 +18,7 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/auth" element={<Authentication />} />
 
-          <Route path="/:url" element={<VideoMeet />} />
+          <Route path="/meeting/:roomId" element={<VideoMeet />} />
         </Routes>
       </main>
 

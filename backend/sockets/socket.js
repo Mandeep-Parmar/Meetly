@@ -43,6 +43,9 @@ export const connectToSocket = (server) => {
 
     // ------------------- JOIN ROOM (JOIN CALL) -----------------------
     socket.on("join-call", ({ roomId, username }) => {
+      console.log("User:", socket.id);
+      console.log("Joining room:", roomId);
+
       // create room if not exists
       if (!connections[roomId]) {
         connections[roomId] = [];
@@ -123,6 +126,18 @@ export const connectToSocket = (server) => {
       // Update this user's media status
       users[socket.id].video = video;
       users[socket.id].audio = audio;
+
+      // room aware for media update
+      let roomId = null;
+
+      for (const key in connections) {
+        if (connections[key].includes(socket.id)) {
+          roomId = key;
+          break;
+        }
+      }
+
+      if (!roomId) return;
 
       // Notify everyone
       io.emit("user-media-updated", socket.id, users[socket.id]);

@@ -3,8 +3,11 @@ import { io } from "socket.io-client";
 import { toast } from "react-toastify";
 import Lobby from "./Lobby";
 import MeetingRoom from "./MeetingRoom";
+import { useParams } from "react-router-dom";
 
 const VideoMeet = () => {
+  const { roomId } = useParams();
+
   // ======================================================
   // WebRTC Configuration
   //
@@ -474,8 +477,6 @@ const VideoMeet = () => {
   // Join Meeting
   // ======================================================
   const joinMeeting = () => {
-    const roomId = "meeting-123";
-
     socketRef.current.emit("join-call", { roomId, username });
 
     console.log("Joined Room:", roomId);
