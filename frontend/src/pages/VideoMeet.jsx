@@ -583,9 +583,15 @@ const VideoMeet = () => {
           handleAudio={handleAudio}
         />
       ) : (
-        <>
-          <MeetingRoom localVideoRef={localVideoRef} videos={videos} />
-        </>
+        <MeetingRoom
+          localVideoRef={localVideoRef}
+          videos={videos}
+          video={video}
+          audio={audio}
+          screen={screen}
+          handleVideo={handleVideo}
+          handleAudio={handleAudio}
+        />
       )}
     </div>
   );

@@ -1,7 +1,17 @@
 import React from "react";
 import MeetingNavbar from "../components/MeetingNavbar";
+import BottomControls from "../components/BottomControls";
+import { MicOff } from "lucide-react";
 
-const MeetingRoom = ({ localVideoRef, videos }) => {
+const MeetingRoom = ({
+  localVideoRef,
+  videos,
+  video,
+  audio,
+  screen,
+  handleVideo,
+  handleAudio,
+}) => {
   return (
     <div className="min-h-screen bg-[#0B0B0F] text-white flex flex-col">
       {/* Top Navbar */}
@@ -21,6 +31,12 @@ const MeetingRoom = ({ localVideoRef, videos }) => {
               playsInline
               className="w-full h-full object-cover"
             />
+
+            {!audio && (
+              <div className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/70 flex items-center justify-center">
+                <MicOff size={16} className="text-red-400" />
+              </div>
+            )}
 
             <div className="absolute bottom-3 left-3 px-3 py-1 rounded-full bg-black/70 text-sm font-medium">
               You
@@ -52,7 +68,13 @@ const MeetingRoom = ({ localVideoRef, videos }) => {
         </div>
       </div>
 
-      {/* Bottom Controls will come here */}
+      <BottomControls
+        video={video}
+        audio={audio}
+        screen={screen}
+        handleVideo={handleVideo}
+        handleAudio={handleAudio}
+      />
     </div>
   );
 };
