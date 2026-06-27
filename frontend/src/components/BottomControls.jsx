@@ -10,7 +10,14 @@ import {
   PhoneOff,
 } from "lucide-react";
 
-const BottomControls = ({ video, audio, screen, handleVideo, handleAudio }) => {
+const BottomControls = ({
+  video,
+  audio,
+  screen,
+  handleVideo,
+  handleAudio,
+  leaveMeeting,
+}) => {
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
       <div className="flex items-center gap-2 sm:gap-3 rounded-2xl border border-white/10 bg-[#151520]/95 backdrop-blur-md px-4 py-3 shadow-2xl">
@@ -71,7 +78,10 @@ const BottomControls = ({ video, audio, screen, handleVideo, handleAudio }) => {
         <div className="mx-1 w-px h-8 sm:h-10 bg-white/10" />
 
         {/* Leave */}
-        <button className="flex flex-col items-center gap-1">
+        <button
+          onClick={leaveMeeting}
+          className="flex flex-col items-center gap-1"
+        >
           <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-red-500 hover:bg-red-600 transition flex items-center justify-center">
             <PhoneOff size={18} />
           </div>

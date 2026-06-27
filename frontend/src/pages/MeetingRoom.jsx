@@ -13,6 +13,7 @@ const MeetingRoom = ({
   screen,
   handleVideo,
   handleAudio,
+  leaveMeeting,
 }) => {
   return (
     <div className="min-h-screen bg-[#0B0B0F] text-white flex flex-col">
@@ -108,6 +109,7 @@ const MeetingRoom = ({
         screen={screen}
         handleVideo={handleVideo}
         handleAudio={handleAudio}
+        leaveMeeting={leaveMeeting}
       />
     </div>
   );

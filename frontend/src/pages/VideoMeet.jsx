@@ -3,9 +3,10 @@ import { io } from "socket.io-client";
 import { toast } from "react-toastify";
 import Lobby from "./Lobby";
 import MeetingRoom from "./MeetingRoom";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const VideoMeet = () => {
+  const navigate = useNavigate();
   const { roomId } = useParams();
 
   // ======================================================
@@ -287,7 +288,7 @@ const VideoMeet = () => {
   };
 
   // ======================================================
-  // User left
+  // User left (when other user leave the meeting)
   // Remove their video from the UI.
   // ======================================================
   const handleUserLeft = (userId) => {
@@ -605,6 +606,35 @@ const VideoMeet = () => {
     );
   };
 
+  // when you leave the meeting
+  const leaveMeeting = () => {
+    // ---------------- Stop Camera & Mic ----------------
+    if (window.localStream) {
+      window.localStream.getTracks().forEach((track) => track.stop());
+    }
+
+    // ---------------- Close all Peer Connections ----------------
+    Object.values(connections.current).forEach((peer) => {
+      peer.close();
+    });
+
+    connect.current = {};
+
+    // ---------------- Disconnect Socket ----------------
+    if (socketRef.current) {
+      socketRef.current.disconnect();
+      socketRef.current = null;
+    }
+
+    // ---------------- Clear UI ----------------
+    setVideos([]);
+    setUsersData({});
+    setAskForUsername(true);
+
+    // ---------------- Go Home ----------------
+    navigate("/");
+  };
+
   return (
     <div className="p-6 text-white">
       {/* ================= USERNAME SCREEN ================= */}
@@ -632,6 +662,7 @@ const VideoMeet = () => {
           screen={screen}
           handleVideo={toggleVideo}
           handleAudio={toggleAudio}
+          leaveMeeting={leaveMeeting}
         />
       )}
     </div>
