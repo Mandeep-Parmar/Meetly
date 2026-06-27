@@ -82,6 +82,17 @@ const VideoMeet = () => {
   // Store other users videos (future WebRTC use)
   const [videos, setVideos] = useState([]);
 
+  // Stores information of every participant
+  // Example:
+  // {
+  //   socketId1: {
+  //      username: "Mandeep",
+  //      video: true,
+  //      audio: true
+  //   }
+  // }
+  const [usersData, setUsersData] = useState({});
+
   //-------------------- GET PERMISSIONS (camera + mic) ------------
   const getPermissions = async () => {
     try {
@@ -391,10 +402,15 @@ const VideoMeet = () => {
   // ======================================================
   // NEW USER JOINED
   // ======================================================
-  const handleUserJoined = (newUserId, users) => {
+  // participants → array of socket IDs
+  // usersData → object containing usernames, video status, audio status
+  const handleUserJoined = (newUserId, participants, userData) => {
     console.log("New User: ", newUserId);
 
-    users.forEach((userId) => {
+    // Save latest participant information
+    setUsersData(userData);
+
+    participants.forEach((userId) => {
       // Don't create a connection with yourself.
       if (userId === socketIdRef.current) return;
 
@@ -439,6 +455,14 @@ const VideoMeet = () => {
     // someone joined
     socketRef.current.on("user-joined", handleUserJoined);
 
+    // whenever someone mutes/unmutes or turns video on/off, everyone's UI updates.
+    socketRef.current.on("user-media-updated", (socketId, user) => {
+      setUsersData((prev) => ({
+        ...prev,
+        [socketId]: user,
+      }));
+    });
+
     // someone left
     socketRef.current.on("user-left", handleUserLeft);
 
@@ -452,7 +476,7 @@ const VideoMeet = () => {
   const joinMeeting = () => {
     const roomId = "meeting-123";
 
-    socketRef.current.emit("join-call", roomId);
+    socketRef.current.emit("join-call", { roomId, username });
 
     console.log("Joined Room:", roomId);
   };
@@ -542,6 +566,15 @@ const VideoMeet = () => {
     // update React State
     setVideo(videoTrack.enabled);
 
+    // this is used bcz audio is react state which works asynchronously
+    const audioTrack = window.localStream.getAudioTracks()[0];
+
+    // emit media-status updated
+    socketRef.current?.emit("media-status", {
+      video: videoTrack.enabled,
+      audio: audioTrack.enabled,
+    });
+
     console.log(videoTrack.enabled ? "Camera Enabled" : "Camera Disabled");
   };
 
@@ -558,6 +591,13 @@ const VideoMeet = () => {
     audioTrack.enabled = !audioTrack.enabled;
 
     setAudio(audioTrack.enabled);
+
+    const videoTrack = window.localStream.getVideoTracks()[0];
+
+    socketRef.current?.emit("media-status", {
+      video: videoTrack.enabled,
+      audio: audioTrack.enabled,
+    });
 
     console.log(
       audioTrack.enabled ? "Microphone Enabled" : "Microphone Disabled",
@@ -584,6 +624,8 @@ const VideoMeet = () => {
         <MeetingRoom
           localVideoRef={localVideoRef}
           videos={videos}
+          usersData={usersData}
+          username={username}
           video={video}
           audio={audio}
           screen={screen}

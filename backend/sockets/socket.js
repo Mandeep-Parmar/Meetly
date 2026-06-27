@@ -17,6 +17,17 @@ let messages = {};
 // Store user join time
 let timeOnline = {};
 
+// Store user information
+// Example:
+// {
+//   socketId1: {
+//      username: "Mandeep",
+//      video: true,
+//      audio: true
+//   }
+// }
+let users = {};
+
 export const connectToSocket = (server) => {
   // create socket server
   const io = new Server(server, {
@@ -31,7 +42,7 @@ export const connectToSocket = (server) => {
     console.log("User connected: ", socket.id);
 
     // ------------------- JOIN ROOM (JOIN CALL) -----------------------
-    socket.on("join-call", (roomId) => {
+    socket.on("join-call", ({ roomId, username }) => {
       // create room if not exists
       if (!connections[roomId]) {
         connections[roomId] = [];
@@ -45,11 +56,18 @@ export const connectToSocket = (server) => {
       // store join time
       timeOnline[socket.id] = new Date();
 
+      // Save user information
+      users[socket.id] = {
+        username,
+        video: true,
+        audio: true,
+      };
+
       console.log("Room: ", roomId, connections[roomId]);
 
       // notify all users in room
       connections[roomId].forEach((id) => {
-        io.to(id).emit("user-joined", socket.id, connections[roomId]);
+        io.to(id).emit("user-joined", socket.id, connections[roomId], users);
       });
 
       // send old messages to new user
@@ -100,6 +118,16 @@ export const connectToSocket = (server) => {
       });
     });
 
+    //------------ USER CHANGED CAMERA / MICROPHONE ------------------
+    socket.on("media-status", ({ video, audio }) => {
+      // Update this user's media status
+      users[socket.id].video = video;
+      users[socket.id].audio = audio;
+
+      // Notify everyone
+      io.emit("user-media-updated", socket.id, users[socket.id]);
+    });
+
     // -------------------- DISCONNECT --------------
     socket.on("disconnect", () => {
       console.log("User disconnected: ", socket.id);
@@ -133,6 +161,9 @@ export const connectToSocket = (server) => {
 
       // Remove time tracking
       delete timeOnline[socket.id];
+
+      // Remove user information
+      delete users[socket.id];
     });
   });
 
