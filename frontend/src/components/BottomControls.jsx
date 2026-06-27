@@ -17,6 +17,7 @@ const BottomControls = ({
   handleVideo,
   handleAudio,
   leaveMeeting,
+  toggleScreenShare,
 }) => {
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
@@ -51,11 +52,25 @@ const BottomControls = ({
         <div className="mx-1 w-px h-8 sm:h-10 bg-white/10" />
 
         {/* Screen Share */}
-        <button className="flex flex-col items-center gap-1">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/5 hover:bg-white/10 transition flex items-center justify-center">
+        <button
+          onClick={toggleScreenShare}
+          className="flex flex-col items-center gap-1"
+        >
+          <div
+            className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full transition flex items-center justify-center ${
+              screen
+                ? "bg-blue-600 hover:bg-blue-700"
+                : "bg-white/5 hover:bg-white/10"
+            }`}
+          >
             <MonitorUp size={18} />
           </div>
-          <span className="text-xs text-gray-400">Share</span>
+
+          <span
+            className={`text-xs ${screen ? "text-blue-400" : "text-gray-400"}`}
+          >
+            {screen ? "Sharing" : "Share"}
+          </span>
         </button>
 
         {/* Chat */}

@@ -11,6 +11,7 @@ const MeetingRoom = ({
   video,
   audio,
   screen,
+  toggleScreenShare,
   handleVideo,
   handleAudio,
   leaveMeeting,
@@ -110,6 +111,7 @@ const MeetingRoom = ({
         handleVideo={handleVideo}
         handleAudio={handleAudio}
         leaveMeeting={leaveMeeting}
+        toggleScreenShare={toggleScreenShare}
       />
     </div>
   );

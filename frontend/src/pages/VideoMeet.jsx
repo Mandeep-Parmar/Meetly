@@ -635,6 +635,97 @@ const VideoMeet = () => {
     navigate("/");
   };
 
+  // ======================================================
+  // Replace the camera video with the shared screen
+  // for every connected participant.
+  //
+  // Every participant has their own RTCPeerConnection.
+  // Inside each connection, there is a "video sender"
+  // responsible for sending our camera to that participant.
+  //
+  // We find that sender and replace the camera track
+  // with the screen track.
+  //
+  // This keeps the same WebRTC connection alive.
+  // Only the video source changes (Camera → Screen).
+  // ======================================================
+  const replaceVideoTrack = (newTrack) => {
+    Object.values(connections.current).forEach((peer) => {
+      // Get all RTP senders from this PeerConnection.
+      const videoSender = peer
+        .getSenders()
+        // Find the sender that is sending the VIDEO track. Ignore the audio sender.
+        .find((sender) => sender.track?.kind === "video");
+
+      // If a video sender exists,
+      // replace the current camera track with the screen track.
+      // The remote user will now see our screen instead of the camera.
+      // No need to reconnect or create a new PeerConnection.
+      if (videoSender) {
+        videoSender.replaceTrack(newTrack);
+        console.log("Track replaced");
+      }
+    });
+  };
+
+  // ======================================================
+  // Stop Screen Sharing
+  // ======================================================
+  const stopScreenShare = async () => {
+    const videoTrack = window.localStream.getVideoTracks()[0];
+
+    replaceVideoTrack(videoTrack);
+
+    if (localVideoRef.current) {
+      localVideoRef.current.srcObject = window.localStream;
+    }
+
+    if (window.screenStream) {
+      window.screenStream.getTracks().forEach((track) => track.stop());
+    }
+
+    setScreen(false);
+
+    console.log("Screen sharing stopped");
+  };
+
+  // ======================================================
+  // Toggle Screen Sharing
+  // ======================================================
+  const toggleScreenShare = async () => {
+    try {
+      // If already sharing, stop sharing
+      if (screen) {
+        stopScreenShare();
+        return;
+      }
+
+      // ask user which screen/window to share
+      const screenStream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+      });
+
+      const screenTrack = screenStream.getVideoTracks()[0];
+
+      replaceVideoTrack(screenTrack);
+
+      // save stream globally
+      window.screenStream = screenStream;
+
+      // Show Screen Locally
+      if (localVideoRef.current) {
+        localVideoRef.current.srcObject = screenStream;
+      }
+
+      // update UI
+      setScreen(true);
+
+      console.log("Screen sharing started");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="p-6 text-white">
       {/* ================= USERNAME SCREEN ================= */}
@@ -660,6 +751,7 @@ const VideoMeet = () => {
           video={video}
           audio={audio}
           screen={screen}
+          toggleScreenShare={toggleScreenShare}
           handleVideo={toggleVideo}
           handleAudio={toggleAudio}
           leaveMeeting={leaveMeeting}
