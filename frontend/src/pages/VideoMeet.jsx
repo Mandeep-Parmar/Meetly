@@ -135,33 +135,6 @@ const VideoMeet = () => {
     }
   };
 
-  //---------------------- CONTROL CAMERA / MIC ON-OFF ---------------
-  const updateMedia = async () => {
-    try {
-      // If video or audio enabled
-      if ((video && videoAvailable) || (audio && audioAvailable)) {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: video,
-          audio: audio,
-        });
-
-        // Save stream globally
-        window.localStream = stream;
-
-        // Show video on screen
-        if (localVideoRef.current) {
-          localVideoRef.current.srcObject = stream;
-        }
-      } else {
-        // else both off → stop everything
-        const tracks = localVideoRef.current?.srcObject?.getTracks();
-        tracks?.forEach((track) => track.stop());
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   // ======================================================
   // Handle every signaling message received from Socket.IO.
   //
@@ -521,14 +494,6 @@ const VideoMeet = () => {
     getPermissions();
   }, []);
 
-  // Whenever video OR audio changes
-  // → run updateMedia()
-  useEffect(() => {
-    if (video !== undefined && audio !== undefined) {
-      updateMedia();
-    }
-  }, [audio, video]);
-
   // ======================================================
   // Reattach the existing local media stream after
   // switching from the lobby to the meeting screen.
@@ -556,12 +521,47 @@ const VideoMeet = () => {
     getMedia();
   };
 
-  let handleVideo = () => {
-    setVideo(!video);
+  // ======================================================
+  // VIDEO ON / OFF
+  // ======================================================
+  const toggleVideo = () => {
+    // no stream yet
+    if (!window.localStream) return;
+
+    // Get video track
+    const videoTrack = window.localStream.getVideoTracks()[0];
+
+    if (!videoTrack) return;
+
+    // Toggle the video.
+    //
+    // true  -> camera sends video
+    // false -> camera not sends video
+    videoTrack.enabled = !videoTrack.enabled;
+
+    // update React State
+    setVideo(videoTrack.enabled);
+
+    console.log(videoTrack.enabled ? "Camera Enabled" : "Camera Disabled");
   };
 
-  let handleAudio = () => {
-    setAudio(!audio);
+  // ======================================================
+  // MICROPHONE ON / OFF
+  // ======================================================
+  const toggleAudio = () => {
+    if (!window.localStream) return;
+
+    const audioTrack = window.localStream.getAudioTracks()[0];
+
+    if (!audioTrack) return;
+
+    audioTrack.enabled = !audioTrack.enabled;
+
+    setAudio(audioTrack.enabled);
+
+    console.log(
+      audioTrack.enabled ? "Microphone Enabled" : "Microphone Disabled",
+    );
   };
 
   return (
@@ -576,11 +576,9 @@ const VideoMeet = () => {
           videoAvailable={videoAvailable}
           audioAvailable={audioAvailable}
           video={video}
-          setVideo={setVideo}
           audio={audio}
-          setAudio={setAudio}
-          handleVideo={handleVideo}
-          handleAudio={handleAudio}
+          handleVideo={toggleVideo}
+          handleAudio={toggleAudio}
         />
       ) : (
         <MeetingRoom
@@ -589,8 +587,8 @@ const VideoMeet = () => {
           video={video}
           audio={audio}
           screen={screen}
-          handleVideo={handleVideo}
-          handleAudio={handleAudio}
+          handleVideo={toggleVideo}
+          handleAudio={toggleAudio}
         />
       )}
     </div>

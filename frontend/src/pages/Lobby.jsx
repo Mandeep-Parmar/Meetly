@@ -9,9 +9,7 @@ const Lobby = ({
   videoAvailable,
   audioAvailable,
   video,
-  setVideo,
   audio,
-  setAudio,
   handleVideo,
   handleAudio,
 }) => {
