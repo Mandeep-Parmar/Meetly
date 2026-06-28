@@ -172,6 +172,7 @@ export const connectToSocket = (server) => {
       // Delete room id empty
       if (connections[roomId].length === 0) {
         delete connections[roomId];
+        delete messages[roomId]; // Clear chat history
       }
 
       // Remove time tracking

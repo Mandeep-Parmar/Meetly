@@ -12,7 +12,7 @@ const ChatPanel = ({
 }) => {
   return (
     // inset-0 is a utility class that sets the top, right, bottom, and left CSS properties of a positioned element to 0px simultaneously
-    <div className="fixed inset-0 z-50 bg-[#111118] flex flex-col md:relative md:inset-auto md:w-[380px] md:border-l md:border-white/10">
+    <div className="fixed inset-0 z-50 bg-[#111118] flex flex-col md:relative md:inset-auto md:w-[380px] md:flex-shrink-0 md:border-l md:border-white/10">
       {/* Header  */}
       <div className="h-16 px-6 border-b border-white/10 flex items-center justify-between">
         <h2 className="text-xl font-semibold">In-call messages</h2>

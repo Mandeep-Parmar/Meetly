@@ -23,15 +23,28 @@ const MeetingRoom = ({
   messages,
   sendMessage,
 }) => {
+  // Total participants (You + Remote Users)
+  const totalParticipants = videos.length + 1;
+
+  // Mobile: scroll after 3 users
+  // Desktop: scroll after 5 users
+  const shouldScrollMobile = totalParticipants > 3;
+  const shouldScrollDesktop = totalParticipants > 5;
+
   return (
-    <div className="min-h-screen bg-[#0B0B0F] text-white flex flex-col">
+    <div className="h-screen bg-[#0B0B0F] text-white flex flex-col overflow-hidden">
       {/* Top Navbar */}
       <MeetingNavbar />
 
       {/* Main Meeting Area */}
       <div className="flex flex-1 overflow-hidden">
         <div
-          className={`transition-all duration-300 ${showChat ? "w-[calc(100%-380px)]" : "w-full"} p-5 overflow-y-auto`}
+          className={`flex-1 transition-all duration-300 
+            ${showChat ? "md:w-[calc(100%-380px)]" : "w-full"} 
+            p-5 pb-28 md:pb-32
+            ${shouldScrollMobile ? "overflow-y-auto" : "overflow-hidden"} 
+            md:${shouldScrollDesktop ? "overflow-y-auto" : "overflow-hidden"}
+          `}
         >
           {/* ===================== VIDEO GRID ===================== */}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
