@@ -18,6 +18,8 @@ const BottomControls = ({
   handleAudio,
   leaveMeeting,
   toggleScreenShare,
+  showChat,
+  setShowChat,
 }) => {
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
@@ -74,7 +76,10 @@ const BottomControls = ({
         </button>
 
         {/* Chat */}
-        <button className="flex flex-col items-center gap-1">
+        <button
+          onClick={() => setShowChat(!showChat)}
+          className="flex flex-col items-center gap-1"
+        >
           <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/5 hover:bg-white/10 transition flex items-center justify-center">
             <MessageCircle size={18} />
           </div>

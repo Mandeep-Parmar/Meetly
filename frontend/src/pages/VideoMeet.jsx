@@ -62,8 +62,8 @@ const VideoMeet = () => {
 
   // ================= UI STATES =================
 
-  // Show model (not used yet)
-  const [showModel, setShowMode] = useState(true);
+  // show chat screen ui
+  const [showChat, setShowChat] = useState(false);
   // Show username input screen first
   const [askForUsername, setAskForUsername] = useState(true);
 
@@ -755,6 +755,8 @@ const VideoMeet = () => {
           handleVideo={toggleVideo}
           handleAudio={toggleAudio}
           leaveMeeting={leaveMeeting}
+          showChat={showChat}
+          setShowChat={setShowChat}
         />
       )}
     </div>
