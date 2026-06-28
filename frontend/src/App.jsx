@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import Authentication from "./pages/Authentication";
 import Navbar from "./components/Navbar";
@@ -7,13 +7,18 @@ import { ToastContainer } from "react-toastify";
 import VideoMeet from "./pages/VideoMeet";
 
 function App() {
+  const location = useLocation();
+
+  const isMeetingPage = location.pathname.startsWith("/meeting/");
+
   return (
     <div className="min-h-screen flex flex-col bg-zinc-950 text-white">
       <ToastContainer position="top-right" autoClose={3000} />
-      <Navbar />
+      {/* Hide Landing Navbar inside Meeting */}
+      {!isMeetingPage && <Navbar />}
 
       {/* grow → pushes footer to bottom */}
-      <main className="grow pt-20">
+      <main>
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/auth" element={<Authentication />} />
@@ -22,7 +27,8 @@ function App() {
         </Routes>
       </main>
 
-      <Footer />
+      {/* Hide Landing Footer inside Meeting */}
+      {!isMeetingPage && <Footer />}
     </div>
   );
 }

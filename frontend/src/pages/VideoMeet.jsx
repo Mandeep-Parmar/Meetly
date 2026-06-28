@@ -727,7 +727,7 @@ const VideoMeet = () => {
   };
 
   return (
-    <div className="p-6 text-white">
+    <div className="text-white">
       {/* ================= USERNAME SCREEN ================= */}
       {askForUsername ? (
         <Lobby
