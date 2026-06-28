@@ -467,6 +467,19 @@ const VideoMeet = () => {
       }));
     });
 
+    socketRef.current.on("chat-message", (data, sender, socketId) => {
+      console.log("Received:", data);
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          data,
+          sender,
+          socketId,
+        },
+      ]);
+    });
+
     // someone left
     socketRef.current.on("user-left", handleUserLeft);
 
@@ -726,6 +739,14 @@ const VideoMeet = () => {
     }
   };
 
+  const sendMessage = () => {
+    if (message.trim() === "") return;
+
+    socketRef.current.emit("chat-message", message, username);
+
+    setMessage("");
+  };
+
   return (
     <div className="text-white">
       {/* ================= USERNAME SCREEN ================= */}
@@ -757,6 +778,10 @@ const VideoMeet = () => {
           leaveMeeting={leaveMeeting}
           showChat={showChat}
           setShowChat={setShowChat}
+          message={message}
+          setMessage={setMessage}
+          messages={messages}
+          sendMessage={sendMessage}
         />
       )}
     </div>

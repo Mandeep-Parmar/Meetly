@@ -18,6 +18,10 @@ const MeetingRoom = ({
   leaveMeeting,
   showChat,
   setShowChat,
+  message,
+  setMessage,
+  messages,
+  sendMessage,
 }) => {
   return (
     <div className="min-h-screen bg-[#0B0B0F] text-white flex flex-col">
@@ -27,7 +31,7 @@ const MeetingRoom = ({
       {/* Main Meeting Area */}
       <div className="flex flex-1 overflow-hidden">
         <div
-          className={`transition-all duration-300 ${showChat ? "w-[calc(100%-360px)]" : "w-full"} p-5 overflow-y-auto`}
+          className={`transition-all duration-300 ${showChat ? "w-[calc(100%-380px)]" : "w-full"} p-5 overflow-y-auto`}
         >
           {/* ===================== VIDEO GRID ===================== */}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
@@ -112,7 +116,15 @@ const MeetingRoom = ({
 
         {/*---------------- Chat panel ---------- */}
         {showChat && (
-          <ChatPanel showChat={showChat} setShowChat={setShowChat} />
+          <ChatPanel
+            showChat={showChat}
+            setShowChat={setShowChat}
+            message={message}
+            setMessage={setMessage}
+            messages={messages}
+            sendMessage={sendMessage}
+            username={username}
+          />
         )}
       </div>
 
