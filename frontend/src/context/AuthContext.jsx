@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -11,10 +11,16 @@ const AuthProvider = ({ children }) => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   const [token, setToken] = useState(null);
+  const [user, setUser] = useState(null);
 
-  useState(() => {
+  useEffect(() => {
     const storedToken = localStorage.getItem("token");
-    if (storedToken) setToken(storedToken);
+    const storedUser = localStorage.getItem("user");
+
+    if (storedToken && storedUser) {
+      setToken(storedToken);
+      setUser(JSON.parse(storedUser));
+    }
   }, []);
 
   const handleRegister = async ({ username, email, password, setIsLogin }) => {
@@ -51,7 +57,10 @@ const AuthProvider = ({ children }) => {
 
         localStorage.setItem("token", response.data.token);
 
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+
         setToken(response.data.token);
+        setUser(response.data.user);
 
         navigate("/dashboard");
       } else {
@@ -63,14 +72,17 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
     setToken(null);
+    setUser(null);
 
     navigate("/auth");
   };
 
-  const value = { handleRegister, handleLogin, token, handleLogout };
+  const value = { handleRegister, handleLogin, token, user, handleLogout };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
