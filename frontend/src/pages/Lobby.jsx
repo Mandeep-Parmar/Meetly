@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Video, VideoOff, Mic, MicOff, Circle, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 const Lobby = ({
   localVideoRef,
@@ -16,11 +17,19 @@ const Lobby = ({
 }) => {
   const navigate = useNavigate();
 
+  const { user } = useContext(AuthContext);
+
   return (
     <section>
       <div className="h-16 border-b border-white/10 flex items-center px-6">
         <button
-          onClick={() => navigate("/")}
+          onClick={() => {
+            if (user) {
+              navigate("/dashboard");
+            } else {
+              navigate("/");
+            }
+          }}
           className="flex items-center gap-2 text-gray-300 hover:text-white"
         >
           <ArrowLeft size={18} />
@@ -46,19 +55,38 @@ const Lobby = ({
           </div>
 
           {/* Form */}
-          <div className="space-y-2">
-            <label className="text-xs ml-2 tracking-widest uppercase text-gray-500">
-              Your Name
-            </label>
+          {!user ? (
+            <div className="space-y-2">
+              <label className="text-xs ml-2 tracking-widest uppercase text-gray-500">
+                Your Name
+              </label>
 
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Enter your name"
-              className="w-full h-13 px-5 rounded-xl bg-[#151520] border border-white/10 outline-none focus:border-purple-500 placeholder:text-gray-500"
-            />
-          </div>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Enter your name"
+                className="w-full h-13 px-5 rounded-xl bg-[#151520] border border-white/10 outline-none focus:border-purple-500 placeholder:text-gray-500"
+              />
+            </div>
+          ) : (
+            <div className="space-y-2">
+              <label className="text-xs ml-2 tracking-widest uppercase text-gray-500">
+                Signed in as
+              </label>
+
+              <div className="flex items-center gap-3 px-6 py-2 rounded-xl bg-[#151520] border border-white/10">
+                <div className="w-9 h-9 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center font-semibold">
+                  {user?.username?.charAt(0).toUpperCase()}
+                </div>
+
+                <div>
+                  <p className="font-medium">{user?.username}</p>
+                  <p className="text-xs text-gray-400">{user?.email}</p>
+                </div>
+              </div>
+            </div>
+          )}
 
           <button
             onClick={connect}

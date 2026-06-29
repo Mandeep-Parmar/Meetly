@@ -1,9 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import { toast } from "react-toastify";
 import Lobby from "./Lobby";
 import MeetingRoom from "./MeetingRoom";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 const VideoMeet = () => {
   const navigate = useNavigate();
@@ -98,6 +99,17 @@ const VideoMeet = () => {
   //   }
   // }
   const [usersData, setUsersData] = useState({});
+
+  const { user } = useContext(AuthContext);
+  const location = useLocation();
+
+  useEffect(() => {
+    const finalUsername = location.state?.username || user?.username || "";
+
+    if (finalUsername) {
+      setUsername(finalUsername);
+    }
+  }, [location.state, user]);
 
   //-------------------- GET PERMISSIONS (camera + mic) ------------
   const getPermissions = async () => {

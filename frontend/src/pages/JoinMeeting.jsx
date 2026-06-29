@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import JoinCard from "../components/JoinCard";
 import Navbar from "../components/Navbar";
 import JoinActions from "../components/JoinActions";
 import { useNavigate } from "react-router-dom";
 import useMeeting from "../hooks/useMeeting";
+import { AuthContext } from "../context/AuthContext";
 
 const JoinMeeting = () => {
+  const { user } = useContext(AuthContext);
+
   const navigate = useNavigate();
 
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState(user?.username || "");
   const [meetingId, setMeetingId] = useState("");
 
   const { joinMeeting, createMeeting } = useMeeting();
