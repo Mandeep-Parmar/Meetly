@@ -7,22 +7,29 @@ const actions = [
     description: "Start an instant meeting and invite anyone.",
     icon: Video,
     color: "from-indigo-500 to-purple-500",
+    action: "create",
   },
   {
     title: "Join Meeting",
     description: "Join instantly using a meeting code or link.",
     icon: Link2,
     color: "from-violet-500 to-fuchsia-500",
+    action: "join",
   },
   {
     title: "Meeting History",
     description: "View all your previous meetings.",
     icon: History,
     color: "from-purple-500 to-pink-500",
+    action: "history",
   },
 ];
 
-const QuickActions = () => {
+const QuickActions = ({
+  handleCreateMeeting,
+  handleJoinMeeting,
+  handleHistory,
+}) => {
   return (
     <section className="mt-16 mb-20">
       {/* Heading */}
@@ -43,6 +50,15 @@ const QuickActions = () => {
 
           return (
             <button
+              onClick={() => {
+                if (action.action === "create") {
+                  handleCreateMeeting();
+                } else if (action.action === "join") {
+                  handleJoinMeeting();
+                } else {
+                  handleHistory();
+                }
+              }}
               key={action.title}
               className="group rounded-3xl border border-white/10 bg-[#171721]/90 p-6 text-left transition-all duration-300 hover:-translate-y-2 hover:border-purple-500/40 hover:shadow-[0_0_40px_rgba(139,92,246,.15)] cursor-pointer"
             >

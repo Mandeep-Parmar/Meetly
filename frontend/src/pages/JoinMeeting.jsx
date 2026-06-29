@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import JoinCard from "../components/JoinCard";
 import Navbar from "../components/Navbar";
 import JoinActions from "../components/JoinActions";
-import generateMeetingId from "../utils/generateMeetingId";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import useMeeting from "../hooks/useMeeting";
 
 const JoinMeeting = () => {
   const navigate = useNavigate();
@@ -12,48 +11,18 @@ const JoinMeeting = () => {
   const [username, setUsername] = useState("");
   const [meetingId, setMeetingId] = useState("");
 
-  const getMeetingId = (value) => {
-    value = value.trim();
-
-    if (value.includes("/")) {
-      const parts = value.split("/");
-
-      return parts[parts.length - 1];
-    }
-
-    return value;
-  };
+  const { joinMeeting, createMeeting } = useMeeting();
 
   const handleJoinMeeting = () => {
-    if (!username.trim()) {
-      toast.error("Enter your name");
-      return;
-    }
-
-    if (!meetingId.trim()) {
-      toast.error("Enter meeting ID");
-      return;
-    }
-
-    const roomId = getMeetingId(meetingId);
-
-    if (!roomId.startsWith("mtly-")) {
-      toast.error("Invalid meeting ID");
-      return;
-    }
-
-    navigate(`/meeting/${roomId}`, {
-      state: {
-        username,
-      },
+    joinMeeting({
+      username,
+      meetingId,
     });
   };
 
   const handleCreateMeeting = () => {
-    const roomId = generateMeetingId();
-
-    navigate(`/meeting/${roomId}`, {
-      state: { username },
+    createMeeting({
+      username,
     });
   };
 

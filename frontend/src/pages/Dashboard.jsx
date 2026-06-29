@@ -1,10 +1,31 @@
-import React from "react";
+import React, { useContext } from "react";
 import Navbar from "../components/Navbar";
 import DashboardActions from "../components/DashboardActions";
 import DashboardHero from "../components/DashboardHero";
 import QuickActions from "../components/QuickActions";
+import { AuthContext } from "../context/AuthContext";
+import useMeeting from "../hooks/useMeeting";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+
+  const { user } = useContext(AuthContext);
+
+  const { createMeeting } = useMeeting();
+
+  const handleCreateMeeting = () => {
+    createMeeting({ username: user.username });
+  };
+
+  const handleJoinMeeting = () => {
+    navigate("/join");
+  };
+
+  const handleHistory = () => {
+    navigate("/history");
+  };
+
   return (
     <>
       <div className="min-h-screen bg-[#0B0B0F] text-white">
@@ -30,7 +51,11 @@ const Dashboard = () => {
             <DashboardHero />
 
             {/* Quick Actions */}
-            <QuickActions />
+            <QuickActions
+              handleCreateMeeting={handleCreateMeeting}
+              handleJoinMeeting={handleJoinMeeting}
+              handleHistory={handleHistory}
+            />
 
             {/* Tips */}
             {/* <TipsCard /> */}
