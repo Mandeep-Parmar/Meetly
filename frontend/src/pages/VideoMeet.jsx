@@ -42,6 +42,8 @@ const VideoMeet = () => {
   // This stores the socket id
   const socketIdRef = useRef();
 
+  const showChatRef = useRef(false);
+
   // ================= PERMISSIONS =================
 
   // Whether camera permission is granted
@@ -79,7 +81,7 @@ const VideoMeet = () => {
   // Current message typing
   const [message, setMessage] = useState("");
   // Count unread messages
-  const [NewMessages, setNewMessages] = useState(0);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   // ================= VIDEO LIST =================
 
@@ -478,6 +480,11 @@ const VideoMeet = () => {
           socketId,
         },
       ]);
+
+      // Increase unread count only if chat panel is closed (also Don't count your own messages)
+      if (!showChatRef.current && socketId !== socketRef.current.id) {
+        setUnreadCount((prev) => prev + 1);
+      }
     });
 
     // someone left
@@ -747,6 +754,24 @@ const VideoMeet = () => {
     setMessage("");
   };
 
+  // Reset unread count when opening chat
+  const toggleChat = () => {
+    setShowChat((prev) => {
+      const next = !prev;
+
+      if (next) {
+        setUnreadCount(0);
+      }
+
+      return next;
+    });
+  };
+
+  // Whenever showChat changes
+  useEffect(() => {
+    showChatRef.current = showChat;
+  }, [showChat]);
+
   return (
     <div className="text-white">
       {/* ================= USERNAME SCREEN ================= */}
@@ -782,6 +807,8 @@ const VideoMeet = () => {
           setMessage={setMessage}
           messages={messages}
           sendMessage={sendMessage}
+          unreadCount={unreadCount}
+          toggleChat={toggleChat}
         />
       )}
     </div>

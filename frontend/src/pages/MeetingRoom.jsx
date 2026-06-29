@@ -22,6 +22,8 @@ const MeetingRoom = ({
   setMessage,
   messages,
   sendMessage,
+  unreadCount,
+  toggleChat,
 }) => {
   // Total participants (You + Remote Users)
   const totalParticipants = videos.length + 1;
@@ -152,6 +154,8 @@ const MeetingRoom = ({
           toggleScreenShare={toggleScreenShare}
           showChat={showChat}
           setShowChat={setShowChat}
+          unreadCount={unreadCount}
+          toggleChat={toggleChat}
         />
       </div>
     </div>

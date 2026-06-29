@@ -20,6 +20,8 @@ const BottomControls = ({
   toggleScreenShare,
   showChat,
   setShowChat,
+  unreadCount,
+  toggleChat,
 }) => {
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
@@ -77,11 +79,16 @@ const BottomControls = ({
 
         {/* Chat */}
         <button
-          onClick={() => setShowChat(!showChat)}
+          onClick={toggleChat}
           className="flex flex-col items-center gap-1"
         >
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/5 hover:bg-white/10 transition flex items-center justify-center">
+          <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/5 hover:bg-white/10 transition flex items-center justify-center">
             <MessageCircle size={18} />
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 min-w-5 h-5 px-1 rounded-full bg-purple-500 text-white text-[11px] font-semibold flex items-center justify-center">
+                {unreadCount > 99 ? "99+" : unreadCount}
+              </span>
+            )}
           </div>
           <span className="text-xs text-gray-400">Chat</span>
         </button>
