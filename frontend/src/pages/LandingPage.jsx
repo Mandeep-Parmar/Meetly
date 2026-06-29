@@ -5,6 +5,7 @@ import Features from "../components/Features";
 import HowItWorks from "../components/HowItWorkes";
 import CTA from "../components/CTA";
 import Footer from "../components/Footer";
+import LandingActions from "../components/LandingActions";
 
 const LandingPage = () => {
   return (
@@ -16,6 +17,11 @@ const LandingPage = () => {
       <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-purple-500 opacity-20 blur-[150px] rounded-full z-0"></div>
 
       <div className="relative z-10">
+        <Navbar>
+          {/* pass as children */}
+          <LandingActions />
+        </Navbar>
+
         <div className="pt-24 px-5">
           <Hero />
         </div>
