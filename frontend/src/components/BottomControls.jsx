@@ -18,8 +18,6 @@ const BottomControls = ({
   handleAudio,
   leaveMeeting,
   toggleScreenShare,
-  showChat,
-  setShowChat,
   unreadCount,
   toggleChat,
 }) => {

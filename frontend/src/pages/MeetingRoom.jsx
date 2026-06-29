@@ -132,7 +132,6 @@ const MeetingRoom = ({
         {/*---------------- Chat panel ---------- */}
         {showChat && (
           <ChatPanel
-            showChat={showChat}
             setShowChat={setShowChat}
             message={message}
             setMessage={setMessage}
@@ -152,8 +151,6 @@ const MeetingRoom = ({
           handleAudio={handleAudio}
           leaveMeeting={leaveMeeting}
           toggleScreenShare={toggleScreenShare}
-          showChat={showChat}
-          setShowChat={setShowChat}
           unreadCount={unreadCount}
           toggleChat={toggleChat}
         />
