@@ -53,7 +53,7 @@ const AuthProvider = ({ children }) => {
 
         setToken(response.data.token);
 
-        navigate("/");
+        navigate("/dashboard");
       } else {
         toast.error(response.data.message);
       }

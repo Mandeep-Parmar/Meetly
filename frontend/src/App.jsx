@@ -5,6 +5,8 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import { ToastContainer } from "react-toastify";
 import VideoMeet from "./pages/VideoMeet";
+import JoinMeeting from "./pages/JoinMeeting";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   const location = useLocation();
@@ -22,6 +24,8 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/auth" element={<Authentication />} />
+          <Route path="/join" element={<JoinMeeting />} />
+          <Route path="/dashboard" element={<Dashboard />} />
 
           <Route path="/meeting/:roomId" element={<VideoMeet />} />
         </Routes>

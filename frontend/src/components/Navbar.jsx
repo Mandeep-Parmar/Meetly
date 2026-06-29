@@ -24,7 +24,10 @@ const Navbar = () => {
 
         {/* Desktop Buttons */}
         <div className="hidden md:flex items-center gap-3">
-          <button className="px-4 py-2 rounded-full bg-white/10 text-white text-sm hover:bg-white/20 transition">
+          <button
+            onClick={() => navigate("/join")}
+            className="px-4 py-2 rounded-full bg-white/10 text-white text-sm hover:bg-white/20 transition"
+          >
             Join as Guest
           </button>
 
