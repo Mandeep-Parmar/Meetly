@@ -5,6 +5,7 @@ import connectDB from "./config/mongodb.js";
 import { connectToSocket } from "./sockets/socket.js";
 import { createServer } from "node:http";
 import userRouter from "./routes/userRoute.js";
+import meetingRouter from "./routes/meetingRoute.js";
 
 const app = express();
 connectDB();
@@ -19,6 +20,7 @@ const port = process.env.PORT || 4000;
 
 // api routes
 app.use("/api/user", userRouter);
+app.use("/api/meeting", meetingRouter);
 
 app.get("/", (req, res) => {
   res.send("API Working");

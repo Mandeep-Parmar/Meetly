@@ -1,18 +1,47 @@
 import mongoose from "mongoose";
 
 const MeetingSchema = mongoose.Schema({
+  // User who created the meeting
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+    required: true,
   },
+
   meetingCode: {
     type: String,
     required: true,
   },
-  date: {
+
+  // Users who joined the meeting
+  participants: [
+    {
+      user_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+      username: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
+
+  // meeting start time
+  startedAt: {
     type: Date,
     default: Date.now,
-    required: true,
+  },
+
+  // Meeting end time
+  endedAt: {
+    type: Date,
+  },
+
+  // Duration in seconds
+  duration: {
+    type: Number,
+    default: 0,
   },
 });
 
