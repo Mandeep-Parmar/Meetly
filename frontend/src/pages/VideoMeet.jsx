@@ -100,8 +100,7 @@ const VideoMeet = () => {
   // }
   const [usersData, setUsersData] = useState({});
 
-  const { user, token, createMeeting, addParticipant } =
-    useContext(AuthContext);
+  const { user, token, createMeeting } = useContext(AuthContext);
   const location = useLocation();
 
   useEffect(() => {
@@ -584,8 +583,6 @@ const VideoMeet = () => {
         toast.error("Unable to create meeting.");
         return;
       }
-
-      await addParticipant(roomId);
     }
 
     setAskForUsername(false);
