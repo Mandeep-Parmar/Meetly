@@ -82,7 +82,33 @@ const AuthProvider = ({ children }) => {
     navigate("/auth");
   };
 
-  const value = { handleRegister, handleLogin, token, user, handleLogout };
+  const createMeeting = async (meetingCode) => {
+    try {
+      const response = await axios.post(
+        `${backendUrl}/api/meeting/create`,
+        { meetingCode },
+        { headers: { token } },
+      );
+
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response?.data?.message || error.message);
+
+      return {
+        success: false,
+      };
+    }
+  };
+
+  const value = {
+    handleRegister,
+    handleLogin,
+    token,
+    user,
+    handleLogout,
+    createMeeting,
+  };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

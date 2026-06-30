@@ -100,7 +100,7 @@ const VideoMeet = () => {
   // }
   const [usersData, setUsersData] = useState({});
 
-  const { user } = useContext(AuthContext);
+  const { user, token, createMeeting } = useContext(AuthContext);
   const location = useLocation();
 
   useEffect(() => {
@@ -565,7 +565,7 @@ const VideoMeet = () => {
   // After clicking connect:
   // → if permission = true → turn ON
   // → if permission = false → stay OFF
-  const connect = () => {
+  const connect = async () => {
     // Remove extra spaces
     const trimmedUsername = username.trim();
 
@@ -573,6 +573,18 @@ const VideoMeet = () => {
     if (!trimmedUsername) {
       toast.error("Please enter your username.");
       return;
+    }
+
+    // Create meeting only for logged-in users
+    if (token) {
+      const response = await createMeeting(roomId);
+
+      console.log(response);
+
+      if (!response?.success) {
+        toast.error("Unable to create meeting.");
+        return;
+      }
     }
 
     setAskForUsername(false);
