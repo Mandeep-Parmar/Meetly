@@ -101,6 +101,22 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  const getMeetingHistory = async () => {
+    try {
+      const response = await axios.get(`${backendUrl}/api/meeting/history`, {
+        headers: { token },
+      });
+
+      return response.data;
+    } catch (error) {
+      console.log(error);
+
+      return {
+        success: false,
+      };
+    }
+  };
+
   const value = {
     handleRegister,
     handleLogin,
@@ -108,6 +124,7 @@ const AuthProvider = ({ children }) => {
     user,
     handleLogout,
     createMeeting,
+    getMeetingHistory,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

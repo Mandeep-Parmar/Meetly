@@ -44,3 +44,20 @@ export const createMeeting = async (req, res) => {
     });
   }
 };
+
+export const getMeetingHistory = async (req, res) => {
+  try {
+    const meetings = await MeetingModel.find({ user_id: req.user.id }).sort({
+      date: -1,
+    });
+
+    res.json({ success: true, meetings });
+  } catch (error) {
+    console.log(error);
+
+    res.json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
