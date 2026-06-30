@@ -76,12 +76,7 @@ export const connectToSocket = (server) => {
       // send old messages to new user
       if (messages[roomId]) {
         messages[roomId].forEach((msg) => {
-          io.to(socket.id).emit(
-            "chat-message",
-            msg.data,
-            msg.sender,
-            msg.socketId,
-          );
+          io.to(socket.id).emit("chat-message", msg);
         });
       }
     });
@@ -106,18 +101,26 @@ export const connectToSocket = (server) => {
 
       if (!roomId) return;
 
+      // Create message object
+      const chat = {
+        sender,
+        data,
+        socketId: socket.id,
+        time: new Date().toISOString(),
+      };
+
       // store message
       if (!messages[roomId]) {
         messages[roomId] = [];
       }
 
-      messages[roomId].push({ sender, data, socketId: socket.id });
+      messages[roomId].push(chat);
 
-      console.log("Message:", roomId, sender, data);
+      console.log("Message:", chat);
 
       // Send message to all users in room
       connections[roomId].forEach((id) => {
-        io.to(id).emit("chat-message", data, sender, socket.id);
+        io.to(id).emit("chat-message", chat);
       });
     });
 

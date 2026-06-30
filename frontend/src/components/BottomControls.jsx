@@ -6,7 +6,6 @@ import {
   VideoOff,
   MonitorUp,
   MessageCircle,
-  Users,
   PhoneOff,
 } from "lucide-react";
 
@@ -23,7 +22,7 @@ const BottomControls = ({
 }) => {
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
-      <div className="flex items-center gap-2 sm:gap-3 rounded-2xl border border-white/10 bg-[#151520]/95 backdrop-blur-md px-4 py-3 shadow-2xl">
+      <div className="flex items-center gap-2 sm:gap-3 rounded-2xl border border-white/10 bg-[#151520]/95 backdrop-blur-md px-5 py-3 shadow-2xl">
         {/* Mic */}
         <button
           onClick={handleAudio}
@@ -89,14 +88,6 @@ const BottomControls = ({
             )}
           </div>
           <span className="text-xs text-gray-400">Chat</span>
-        </button>
-
-        {/* Participants */}
-        <button className="flex flex-col items-center gap-1">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/5 hover:bg-white/10 transition flex items-center justify-center">
-            <Users size={18} />
-          </div>
-          <span className="text-xs text-gray-400">People</span>
         </button>
 
         {/* Divider */}

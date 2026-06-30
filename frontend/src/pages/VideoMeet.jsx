@@ -481,20 +481,11 @@ const VideoMeet = () => {
       }));
     });
 
-    socketRef.current.on("chat-message", (data, sender, socketId) => {
-      console.log("Received:", data);
-
-      setMessages((prev) => [
-        ...prev,
-        {
-          data,
-          sender,
-          socketId,
-        },
-      ]);
+    socketRef.current.on("chat-message", (chat) => {
+      setMessages((prev) => [...prev, chat]);
 
       // Increase unread count only if chat panel is closed (also Don't count your own messages)
-      if (!showChatRef.current && socketId !== socketRef.current.id) {
+      if (!showChatRef.current && chat.socketId !== socketRef.current.id) {
         setUnreadCount((prev) => prev + 1);
       }
     });

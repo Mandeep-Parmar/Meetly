@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { X, Send } from "lucide-react";
+import formatTime from "../utils/formatTime";
 
 const ChatPanel = ({
   setShowChat,
@@ -90,10 +91,19 @@ const ChatPanel = ({
                   key={index}
                   className={`flex flex-col ${isMe ? "items-end" : "items-start"}`}
                 >
-                  {/* username */}
-                  <span className="mb-1 text-sm font-semibold text-purple-400">
-                    {msg.sender}
-                  </span>
+                  <div
+                    className={`mb-1 flex items-center gap-2 ${
+                      isMe ? "justify-end" : "justify-start"
+                    }`}
+                  >
+                    <span className="text-sm font-semibold text-purple-400">
+                      {msg.sender}
+                    </span>
+
+                    <span className="text-xs text-gray-500">
+                      {formatTime(msg.time)}
+                    </span>
+                  </div>
 
                   <div
                     className={`max-w-[80%] rounded-2xl px-4 py-3 wrap-break-word ${
