@@ -3,6 +3,7 @@ import MeetingNavbar from "../components/MeetingNavbar";
 import BottomControls from "../components/BottomControls";
 import { MicOff } from "lucide-react";
 import ChatPanel from "../components/ChatPanel";
+import { useParams } from "react-router-dom";
 
 const MeetingRoom = ({
   localVideoRef,
@@ -25,6 +26,8 @@ const MeetingRoom = ({
   unreadCount,
   toggleChat,
 }) => {
+  const { roomId } = useParams();
+
   // Total participants (You + Remote Users)
   const totalParticipants = videos.length + 1;
 
@@ -36,7 +39,7 @@ const MeetingRoom = ({
   return (
     <div className="h-screen bg-[#0B0B0F] text-white flex flex-col overflow-hidden">
       {/* Top Navbar */}
-      <MeetingNavbar />
+      <MeetingNavbar roomId={roomId} />
 
       {/* Main Meeting Area */}
       <div className="flex flex-1 overflow-hidden">
