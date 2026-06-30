@@ -7,6 +7,7 @@ import VideoMeet from "./pages/VideoMeet";
 import JoinMeeting from "./pages/JoinMeeting";
 import Dashboard from "./pages/Dashboard";
 import History from "./pages/History";
+import NotFound from "./pages/NotFound";
 
 function App() {
   const location = useLocation();
@@ -17,18 +18,17 @@ function App() {
     <div className="min-h-screen flex flex-col bg-zinc-950 text-white">
       <ToastContainer position="top-right" autoClose={3000} />
 
-      {/* grow → pushes footer to bottom */}
-      <main>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/auth" element={<Authentication />} />
-          <Route path="/join" element={<JoinMeeting />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/history" element={<History />} />
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/auth" element={<Authentication />} />
+        <Route path="/join" element={<JoinMeeting />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/history" element={<History />} />
 
-          <Route path="/meeting/:roomId" element={<VideoMeet />} />
-        </Routes>
-      </main>
+        <Route path="/meeting/:roomId" element={<VideoMeet />} />
+
+        <Route path="*" element={<NotFound />} />
+      </Routes>
 
       {/* Hide Landing Footer inside Meeting */}
       {!isMeetingPage && <Footer />}
