@@ -117,6 +117,24 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  const addParticipant = async (meetingCode) => {
+    try {
+      const respons = axios.post(
+        `${backendUrl}/api/meeting/add-participant`,
+        { meetingCode },
+        { headers: { token } },
+      );
+
+      return respons.data;
+    } catch (error) {
+      console.log(error);
+
+      return {
+        success: false,
+      };
+    }
+  };
+
   const value = {
     handleRegister,
     handleLogin,
@@ -125,6 +143,7 @@ const AuthProvider = ({ children }) => {
     handleLogout,
     createMeeting,
     getMeetingHistory,
+    addParticipant,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
