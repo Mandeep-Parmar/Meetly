@@ -1,7 +1,10 @@
 import React from "react";
 import { Video } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const CTA = () => {
+  const navigate = useNavigate();
+
   return (
     <section className="my-32 px-6 text-center relative overflow-hidden">
       {/* Tag */}
@@ -32,7 +35,10 @@ const CTA = () => {
 
       {/* CTA Button */}
       <div className="mt-10">
-        <button className="group relative px-10 py-4 rounded-full text-lg font-medium text-white bg-gradient-to-r from-indigo-500 to-purple-500 transition duration-300 hover:scale-105 active:scale-95 shadow-xl shadow-purple-500/30">
+        <button
+          className="group relative px-10 py-4 rounded-full text-lg font-medium text-white bg-gradient-to-r from-indigo-500 to-purple-500 transition duration-300 hover:scale-105 active:scale-95 shadow-xl shadow-purple-500/30"
+          onClick={() => navigate("/join")}
+        >
           {/* Content */}
           <span className="relative flex items-center gap-2 justify-center">
             <Video /> Create Meeting — it's free
