@@ -1,6 +1,7 @@
 import React from "react";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
+import logo from "../assets/meetly-logo.png";
 
 const Footer = () => {
   return (
@@ -11,7 +12,7 @@ const Footer = () => {
           {/* LEFT */}
           <div>
             <div className="flex items-center gap-3">
-              <img src="meetly-logo.png" alt="logo" className="w-28" />
+              <img src={logo} alt="logo" className="w-28" />
             </div>
 
             <p className="mt-4 text-gray-400 max-w-sm">

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
-import logo from "../../public/meetly-logo.png";
+import logo from "../assets/meetly-logo.png";
 
 const Navbar = ({ children }) => {
   const [open, setOpen] = useState(false);

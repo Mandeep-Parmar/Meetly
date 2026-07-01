@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Copy, Check } from "lucide-react";
 import { toast } from "react-toastify";
+import logo from "../assets/meetly-logo.png";
 
 const MeetingNavbar = ({ roomId }) => {
   const [elapsedTime, setElapsedTime] = useState(0);
@@ -42,7 +43,7 @@ const MeetingNavbar = ({ roomId }) => {
       <div className="mx-auto px-6 h-full flex items-center justify-between">
         {/* Left Side */}
         <div className="flex items-center gap-3">
-          <img src="/meetly-logo.png" alt="Meetly Logo" className="w-28" />
+          <img src={logo} alt="Meetly Logo" className="w-28" />
         </div>
 
         {/* Center */}
