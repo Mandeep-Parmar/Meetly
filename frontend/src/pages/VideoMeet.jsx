@@ -100,6 +100,17 @@ const VideoMeet = () => {
   // }
   const [usersData, setUsersData] = useState({});
 
+  // Detect Screen Share Support
+  const [screenShareSupported, setScreenShareSupported] = useState(false);
+
+  useEffect(() => {
+    setScreenShareSupported(
+      typeof navigator !== "undefined" &&
+        navigator.mediaDevices &&
+        typeof navigator.mediaDevices.getDisplayMedia === "function",
+    );
+  }, []);
+
   const { user, token, createMeeting } = useContext(AuthContext);
   const location = useLocation();
 
@@ -726,6 +737,13 @@ const VideoMeet = () => {
   // Toggle Screen Sharing
   // ======================================================
   const toggleScreenShare = async () => {
+    if (!navigator.mediaDevices?.getDisplayMedia) {
+      toast.info(
+        "Screen sharing is currently supported only on compatible desktop browsers.",
+      );
+      return;
+    }
+
     try {
       // If already sharing, stop sharing
       if (screen) {
@@ -756,6 +774,8 @@ const VideoMeet = () => {
       console.log("Screen sharing started");
     } catch (error) {
       console.log(error);
+
+      toast.error("Failed to start screen sharing.");
     }
   };
 
@@ -822,6 +842,7 @@ const VideoMeet = () => {
           sendMessage={sendMessage}
           unreadCount={unreadCount}
           toggleChat={toggleChat}
+          screenShareSupported={screenShareSupported}
         />
       )}
     </div>

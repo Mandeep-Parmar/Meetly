@@ -25,6 +25,7 @@ const MeetingRoom = ({
   sendMessage,
   unreadCount,
   toggleChat,
+  screenShareSupported,
 }) => {
   const { roomId } = useParams();
 
@@ -156,6 +157,7 @@ const MeetingRoom = ({
           toggleScreenShare={toggleScreenShare}
           unreadCount={unreadCount}
           toggleChat={toggleChat}
+          screenShareSupported={screenShareSupported}
         />
       </div>
     </div>

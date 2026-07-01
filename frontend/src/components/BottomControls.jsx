@@ -19,6 +19,7 @@ const BottomControls = ({
   toggleScreenShare,
   unreadCount,
   toggleChat,
+  screenShareSupported,
 }) => {
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
@@ -54,23 +55,45 @@ const BottomControls = ({
 
         {/* Screen Share */}
         <button
-          onClick={toggleScreenShare}
+          onClick={() => {
+            if (!screenShareSupported) return;
+
+            toggleScreenShare();
+          }}
+          disabled={!screenShareSupported}
+          title={
+            !screenShareSupported
+              ? "Screen sharing is only supported on compatible desktop browsers."
+              : "Share Screen"
+          }
           className="flex flex-col items-center gap-1"
         >
           <div
             className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full transition flex items-center justify-center ${
-              screen
-                ? "bg-blue-600 hover:bg-blue-700"
-                : "bg-white/5 hover:bg-white/10"
+              !screenShareSupported
+                ? "bg-white/5 opacity-40 cursor-not-allowed"
+                : screen
+                  ? "bg-blue-600 hover:bg-blue-700"
+                  : "bg-white/5 hover:bg-white/10"
             }`}
           >
             <MonitorUp size={18} />
           </div>
 
           <span
-            className={`text-xs ${screen ? "text-blue-400" : "text-gray-400"}`}
+            className={`text-xs ${
+              !screenShareSupported
+                ? "text-gray-500"
+                : screen
+                  ? "text-blue-400"
+                  : "text-gray-400"
+            }`}
           >
-            {screen ? "Sharing" : "Share"}
+            {!screenShareSupported
+              ? "Unavailable"
+              : screen
+                ? "Sharing"
+                : "Share"}
           </span>
         </button>
 
