@@ -9,16 +9,6 @@
 
   <br /><br />
 
-  <a href="https://meetly-live.vercel.app">
-    <img src="https://img.shields.io/badge/🚀 Live Demo-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" />
-  </a>
-  &nbsp;
-  <a href="https://github.com/mandeepparmar/meetly">
-    <img src="https://img.shields.io/badge/📂 Source Code-1a1a2e?style=for-the-badge&logo=github&logoColor=white" alt="Source Code" />
-  </a>
-
-  <br /><br />
-
   <img src="https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB" />
   <img src="https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=node.js&logoColor=white" />
   <img src="https://img.shields.io/badge/Express-000000?style=flat-square&logo=express&logoColor=white" />
@@ -28,6 +18,18 @@
   <img src="https://img.shields.io/badge/Tailwind_CSS-0f172a?style=flat-square&logo=tailwind-css&logoColor=38bdf8" />
 
   <br /><br />
+
+  ---
+
+## 🚀 Live Demo
+
+| Application | URL |
+|---|---|
+| 🌐 Frontend | [https://meetly-live.vercel.app](https://meetly-live.vercel.app) | 
+| 🔗 Backend | [https://meetly-backend-2dyf.onrender.com](https://meetly-backend-2dyf.onrender.com) |
+| 📂 Source Code | [https://github.com/Mandeep-Parmar/Meetly.git](https://github.com/Mandeep-Parmar/Meetly.git) |
+
+---
 
 </div>
 
@@ -210,9 +212,9 @@ Full-Stack Developer specializing in the MERN stack and real-time web applicatio
 
 <div align="center">
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](#)
-[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](#)
-[![Email](https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white)](#)
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Mandeep-Parmar)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/mandeep-p-b44930327/)
+[![Email](https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:mandeeppar07@gmail.com)
 
 </div>
 
