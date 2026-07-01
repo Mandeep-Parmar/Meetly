@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="docs/logo.png" alt="Meetly" width="64" /><br /><br />
+  <img src="docs/logo.png" alt="Meetly" width="100" height="100" /><br /><br />
 
   <h1>Meetly</h1>
   <p>Modern real-time video conferencing platform built with the MERN Stack, WebRTC, and Socket.IO.</p>
@@ -106,7 +106,7 @@ Meetly was built to demonstrate a production-grade understanding of real-time sy
 
 <table>
 <tr>
-  <td><img src="docs/screenshots/landing.png" alt="Landing" /></td>
+  <td><img src="docs/screenshots/hero.png" alt="Landing" /></td>
   <td><img src="docs/screenshots/dashboard.png" alt="Dashboard" /></td>
 </tr>
 <tr>
@@ -114,15 +114,15 @@ Meetly was built to demonstrate a production-grade understanding of real-time sy
   <td align="center"><sub>Dashboard</sub></td>
 </tr>
 <tr>
-  <td><img src="docs/screenshots/lobby.png" alt="Lobby" /></td>
-  <td><img src="docs/screenshots/meeting.png" alt="Meeting Room" /></td>
+  <td><img src="docs/screenshots/lobby.jpeg" alt="Lobby" /></td>
+  <td><img src="docs/screenshots/meeting.jpeg" alt="Meeting Room" /></td>
 </tr>
 <tr>
   <td align="center"><sub>Lobby Preview</sub></td>
   <td align="center"><sub>Meeting Room</sub></td>
 </tr>
 <tr>
-  <td><img src="docs/screenshots/chat.png" alt="Chat" /></td>
+  <td><img src="docs/screenshots/chat.jpeg" alt="Chat" /></td>
   <td><img src="docs/screenshots/history.png" alt="History" /></td>
 </tr>
 <tr>
