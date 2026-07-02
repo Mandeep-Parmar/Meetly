@@ -4,6 +4,7 @@ import BottomControls from "../components/BottomControls";
 import { MicOff } from "lucide-react";
 import ChatPanel from "../components/ChatPanel";
 import { useParams } from "react-router-dom";
+import { useEffect } from "react";
 
 const MeetingRoom = ({
   localVideoRef,
@@ -36,6 +37,30 @@ const MeetingRoom = ({
   // Desktop: scroll after 5 users
   const shouldScrollMobile = totalParticipants > 3;
   const shouldScrollDesktop = totalParticipants > 5;
+
+  useEffect(() => {
+    // push current page into history
+    window.history.pushState(null, "", window.location.href);
+
+    const handleBack = () => {
+      const confirmLeave = window.confirm(
+        "Are you sure you want to leave the meeting?",
+      );
+
+      if (confirmLeave) {
+        leaveMeeting();
+      } else {
+        // prevent back navigation
+        window.history.pushState(null, "", window.location.href);
+      }
+    };
+
+    window.addEventListener("popstate", handleBack);
+
+    return () => {
+      window.removeEventListener("popstate", handleBack);
+    };
+  }, []);
 
   return (
     <div className="h-screen bg-[#0B0B0F] text-white flex flex-col overflow-hidden">
